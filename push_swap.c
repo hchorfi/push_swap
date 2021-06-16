@@ -5,327 +5,277 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hchorfi <hchorfi@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/06 11:33:01 by hchorfi           #+#    #+#             */
-/*   Updated: 2021/05/25 16:23:04 by hchorfi          ###   ########.fr       */
+/*   Created: 2021/06/11 15:31:30 by hchorfi           #+#    #+#             */
+/*   Updated: 2021/06/16 21:47:06 by hchorfi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-t_list   *ft_init_stacks(int argc, char **argv, int stack)
+int *ft_conv_stack_arr(t_list *a, int len)
 {
-    t_list  *a;
-    t_list  *b;
-    int     i;
-    int     *val;
-
-    i = 1;
-    b = NULL;
-    a = NULL;
-    if (stack == 0)
-    {
-        // printf("b : %p\n", b);
-        return (b);
-    }
-    else
-    {
-        while (argv[i])
-        {
-            val = malloc(sizeof(int));
-            *val = ft_atoi(argv[i]);
-            if (a == NULL)
-                a = ft_lstnew(val);
-            else
-                ft_lstadd_back(&a, ft_lstnew(val));
-            i++;            
-        }
-        // printf("a : %p\n", a);
-        return (a);
-    }
+	int *stack_arr;
+	int i;
+	
+	stack_arr = malloc(sizeof(int) * len);
+	i = 0;
+	while (i < len)
+	{
+		stack_arr[i] = *(int *)a->content;
+		i++;
+		a = a->next;
+	}
+	return (stack_arr);
 }
 
-void    ft_print_stacks(t_list **a_head, t_list **b_head)
+int	ft_partition_sort(int *arr, int low, int high)
 {
-    printf("a : %p\n", *a_head);
-    printf("b : %p\n", *b_head);
-    t_list  *a;
-    t_list  *b;
-    a = *a_head;
-    b = *b_head;
-    int link_len;
-    int aa;
+	int pivot;
+	int i;
+	int	j;
+	int swap;
 
-    if (ft_lstsize(a) > ft_lstsize(b))
-        link_len = ft_lstsize(a);
-    else
-        link_len = ft_lstsize(b);
-    while (link_len)
-    {
-        if(a)
-        {
-            printf("%10d", *(int *)a->content);
-            a = a->next;
-            aa = 0;
-        }
-        else
-            aa = 1;
-        if (b)
-        {
-            if (aa == 0)
-                printf("  %10d", *(int *)b->content);
-            else
-                printf("  %20d", *(int *)b->content);
-            b = b->next;
-        }
-        printf(" \n");
-        link_len--;
-    }
-    printf("----------  ----------\n");
-    printf("(stack  a)  (stack b )\n");
-    printf("----------------------\n");
+	pivot = arr[high];
+	i = low - 1;
+	j = low;
 
+	while (j < high)
+	{
+		if (arr[j] <= pivot)
+		{
+			i++;
+			swap = arr[i];
+			arr[i] = arr[j];
+			arr[j] = swap;
+		}
+		j++;
+	}
+	swap = arr[i + 1];
+	arr[i + 1] = arr[high];
+	arr[high] = swap;
+	return (i + 1);
 }
 
-void    ft_swap_stack(t_list **stack)
+int *ft_sort_array(int *arr, int low, int high)
 {
-    int *tmp;
-    if (ft_lstsize(*stack) > 1)
-    {
-        tmp = (*stack)->content;
-        (*stack)->content = (*stack)->next->content;
-        (*stack)->next->content = tmp;
-    }
+	int	pi;
+
+	if	(low < high)
+	{
+		pi = ft_partition_sort(arr, low, high);
+		ft_sort_array(arr, low, pi - 1);
+		ft_sort_array(arr, pi + 1, high);
+	}
+	return (arr);
 }
 
-void    ft_ss(t_list **a, t_list **b)
+void	ft_midpoint_algo_a(t_list **a, t_list **b, int midpoint, int *stack_arr)
 {
-    ft_swap_stack(*(&a));
-    ft_swap_stack(*(&b));
+	int i;
+	int	index;
+	t_list *tail;
+	
+	i = 0;
+	index = ft_lstsize(*a) / 2;
+	while (i < midpoint)
+	{
+		if (*(int *)(*a)->content < stack_arr[midpoint])
+		{
+			ft_pb(a, b, 'b', midpoint);
+			i++;
+			ft_print_stacks(a, b);
+		}
+		else
+		{
+			while (i < midpoint)
+			{
+				tail = ft_lstlast(*a);
+				if (*(int *)tail->content < stack_arr[midpoint])
+				{
+					ft_rev_rot_stack(a, 'a');
+					ft_pb(a, b, 'b', midpoint);
+					i++;
+					ft_print_stacks(a, b);
+				}
+				else
+				{
+					while (i < midpoint)
+					{
+						if (*(int *)(*a)->content < stack_arr[midpoint])
+						{
+							ft_pb(a, b, 'b', midpoint);
+							i++;
+							ft_print_stacks(a, b);
+						}
+						else
+						{
+							ft_rot_stack(a, 'a');
+							ft_print_stacks(a, b);
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
-int     ft_del_list(t_list **head, int position)
+int		ft_chank_len(t_list **stack_head, int chank)
 {
-    t_list *curr;
-    t_list *prev;
-    
-    curr = *head;
-    prev = *head;
-    if (*head == NULL)
-        return (0);
-    else if (position == 1)
-    {
-        *head = curr->next;
-        free(curr);
-        curr = NULL;
-    }
-    else
-    {
-        while (position != 1)
-        {
-            prev = curr;
-            curr = curr->next;
-            position--;
-        }
-        prev->next = curr->next;
-        free(curr);
-        curr = NULL; 
-    }
-    return (0);
+	t_list *stack;
+	int	len;
+
+	stack = *stack_head;
+	len	= 0;
+	printf(" shunk befor size : %d - %d\n", ft_lstsize(stack), (stack)->chank);
+	while (stack && stack->chank == chank)
+	{
+		len++;
+		printf(" shunk size : %d - %d\n", ft_lstsize(stack), (stack)->chank);
+		stack = stack->next;
+		//if (stack->next)
+			//printf(" shunk af size : %d - %d\n", ft_lstsize(stack), (stack)->chank);
+	}
+	return (len);
 }
 
-void    ft_pb(t_list **a, t_list **b)
+void	ft_chanks_to_a(t_list **a_head, t_list **b_head)
 {
-    int *val;
 
-    if (ft_lstsize(*a) > 0)
-    {
-        if (*b == NULL)
-            *b = ft_lstnew((*a)->content);
-        else
-        {
-            ft_lstadd_front(*(&b), ft_lstnew((*a)->content));
-        }
-        ft_del_list(*(&a), 1);
-    }
+	int *stack_arr;
+	int	len;
+	int	midpoint;
+
+	len = ft_chank_len(a_head, (*a_head)->chank);
+	//midpoint = 0;
+	stack_arr = ft_sort_array(ft_conv_stack_arr(*a_head, len), 0, len - 1);
+	while (len > 2)
+	{
+		//ft_print_stacks(a_head, b_head);
+		//midpoint = midpoint + ((len - midpoint) / 2);
+		ft_midpoint_algo_a(a_head, b_head, len / 2, stack_arr);
+		len = ft_chank_len(a_head, (*a_head)->chank);
+		free(stack_arr);
+		stack_arr = ft_sort_array(ft_conv_stack_arr(*a_head, len), 0, len - 1);
+		//printf(" size : %d - %d\n", ft_lstsize(*a_head), (*a_head)->chank);
+	}
+	if (len == 2)
+	{
+		if (*(int *)(*a_head)->content > *(int *)(*a_head)->next->content)
+		{
+			ft_swap_stack(a_head, 'a');
+			ft_print_stacks(a_head, b_head);
+		}
+	}
 }
 
-void    ft_pa(t_list **a, t_list **b)
+void	ft_reverse_array(int *stack_arr, int start, int end)
 {
-    int *val;
+	int tmp;
 
-    if (ft_lstsize(*b) > 0)
-    {
-        if (*a == NULL)
-            *a = ft_lstnew((*b)->content);
-        else
-        {
-            ft_lstadd_front(*(&a), ft_lstnew((*b)->content));
-        }
-        ft_del_list(*(&b), 1);
-    }
+	while (start < end)
+	{
+		tmp = stack_arr[start];
+		stack_arr[start] = stack_arr[end];
+		stack_arr[end] = tmp;
+		start++;
+		end--;
+	}
 }
 
-void    ft_rot_stack(t_list **stack)
+void	ft_push_b_sorted(t_list **a_head, t_list **b_head)
 {
-    if (ft_lstsize(*stack) > 1)
-    {
-        ft_lstadd_back(*(&stack), ft_lstnew((*stack)->content));
-        ft_del_list(*(&stack), 1);
-    }
+	int	*stack_arr;
+	int	len;
+	int	index;
+	t_list *b;
+	int rrb;
+	int rb;
+
+	len = ft_lstsize(*b_head);
+	stack_arr = ft_sort_array(ft_conv_stack_arr(*b_head, len), 0, len - 1);
+	ft_reverse_array(stack_arr, 0, len - 1);
+	while(ft_lstsize(*b_head))
+	{
+		index = 0;
+		b = *b_head;
+		while (b && *(int *)b->content != *stack_arr)
+		{
+			index++;
+			b = b->next;
+		}
+		if (index == 0)
+		{
+			ft_pa(a_head, b_head, 'a', 0);
+			stack_arr++;
+			len--;
+			//ft_print_stacks(a_head, b_head);
+		}
+		else if (index < len / 2)
+		{
+			rb = index;
+			while (index > 0)
+			{
+				ft_rot_stack(b_head, 'b');
+				//ft_print_stacks(a_head, b_head);
+				index--;
+			}
+			ft_pa(a_head, b_head, 'a', 0);
+			stack_arr++;
+			len--;
+		}
+		else
+		{
+			rrb = len - index;
+			while (len - index > 0)
+			{
+				ft_rev_rot_stack(b_head, 'b');
+				//ft_print_stacks(a_head, b_head);
+				index++;
+			}
+			ft_pa(a_head, b_head, 'a', 0);
+			stack_arr++;
+			len--;
+		}
+	}
 }
 
-void    ft_rr(t_list **a, t_list **b)
+void	ft_init_chanks(t_list **a_head)
 {
-    ft_rot_stack(*(&a));
-    ft_rot_stack(*(&b));
-}
+	t_list *a;
 
-void    ft_rev_rot_stack(t_list **stack)
-{
-    t_list *stack_head;
-    int size_stack;
-    int i;
-
-    i = 1;
-    stack_head = *stack;
-    size_stack = ft_lstsize(*stack);
-    if ( size_stack > 1)
-    {
-        while (i <= size_stack)
-        {
-            if (i == size_stack)
-            {
-                ft_lstadd_front(*(&stack), ft_lstnew(stack_head->content));
-                ft_del_list(*(&stack), size_stack + 1);
-                break;
-            }
-            i++;
-            stack_head = stack_head->next;
-        }
-    }
-}
-
-void    ft_rrr(t_list **a, t_list **b)
-{
-    ft_rev_rot_stack(*(&a));
-    ft_rev_rot_stack(*(&b));
-}
-
-int    ft_check_stack_ops(t_list **a, t_list **b)
-{
-    char *line;
-    int  ret;
-
-    printf("a : %p\n", *a);
-    printf("b : %p\n", *b);
-    while (1)
-    {
-        ret = get_next_line(1, &line);
-        printf("opp : %s\n", line);
-        if (!strcmp(line, "sa"))
-        {
-            ft_swap_stack(*(&a));
-        }
-        else if (!strcmp(line, "sb"))
-        {
-            ft_swap_stack(*(&b));
-        }
-        else if (!strcmp(line, "ss"))
-        {
-            ft_ss(*(&a), *(&b));
-        }
-        else if (!strcmp(line, "pb"))
-        {
-            ft_pb(*(&a), *(&b));
-        }
-        else if (!strcmp(line, "pa"))
-        {
-            ft_pa(*(&a), *(&b));
-        }
-        else if (!strcmp(line, "ra"))
-        {
-            ft_rot_stack(*(&a));
-        }
-        else if (!strcmp(line, "rb"))
-        {
-            ft_rot_stack(*(&b));
-        }
-        else if (!strcmp(line, "rr"))
-        {
-            ft_rr(*(&a), *(&b));
-        }
-        else if (!strcmp(line, "rra"))
-        {
-            ft_rev_rot_stack(*(&a));
-        }
-        else if (!strcmp(line, "rrb"))
-        {
-            ft_rev_rot_stack(*(&b));
-        }
-        else if (!strcmp(line, "rrr"))
-        {
-            ft_rrr(*(&a), *(&b));
-        }
-        else if (ret == 1 && ft_strlen(line) == 0)
-        {
-            continue ;
-        }
-        else if (ret == 0 && ft_strlen(line) == 0)
-        {
-            return (0);
-        }
-        else
-        {
-            printf("ret : %d - len : %d - line : %s\n", ret, ft_strlen(line), line);
-            printf("Error\n");
-            return (1);
-        }
-        ft_print_stacks(*(&a), *(&b));
-    }
-    return (0);
-}
-
-int ft_check_sorting(t_list *a, t_list *b)
-{
-    while (a && a->next)
-    {
-        // ft_putnbr_fd(*(int *)a->content, 1);
-        // ft_putstr_fd(" : ", 1);
-        // ft_putnbr_fd(*(int *)a->next->content, 1);
-        // ft_putstr_fd("\n", 1);
-        if ((*(int *)a->content) < (*(int *)a->next->content))
-            a = a->next;
-        else
-        {
-            ft_putstr_fd("ko\n", 1);
-            return (1);
-        }
-    }
-    if (ft_lstsize(b) == 0 && !b)
-        ft_putstr_fd("ok\n", 1);
-    return (0);
+	a = *a_head;
+	while (a)
+	{
+		a->chank = 0;
+		a = a->next;
+	}
 }
 
 int main(int argc, char **argv)
 {
-    t_list  *a;
-    t_list  *b;
-    
-    if (argc == 1)
-        return (0);
-    else if (ft_check_error(argc, argv))
-    {
-        ft_putstr_fd("error\n", 1);
-        return (1);
-    }
-    a = ft_init_stacks(argc, argv, 1);
-    b = ft_init_stacks(argc, argv, 0);
-     printf("a : %p\n", a);
-     printf("b : %p\n", b);
-     printf("init stacks\n");
-     ft_print_stacks(&a, &b);
-    if (ft_check_stack_ops(&a, &b))
-        return (1);
-    ft_check_sorting(a, b);
-    return (0);
+	t_list  *a;
+	t_list  *b;
+
+	if (argc == 1)
+		return (0);
+	else if (ft_check_error(argc, argv))
+	{
+		ft_putstr_fd("\033[0;31m", 1);
+		ft_putstr_fd("error\n", 1);
+		ft_putstr_fd("\033[0m", 1);
+		return (1);
+	}
+	a = ft_init_stacks(argc, argv, 1);
+	b = ft_init_stacks(argc, argv, 0);
+	//printf("a : %p\n", a);
+	//printf("b : %p\n", b);
+	ft_init_chanks(&a);
+	ft_chanks_to_a(&a, &b);
+	//ft_push_b_sorted(&a, &b);
+	// printf("a : %p\n", a);
+	// printf("b : %p\n", b);
+	// printf("init stacks\n");
+	//ft_print_stacks(&a, &b);
+	//printf("sa\npb\npb\npb\nsa\npa\npa\npb\n");
+	return (0);
 }

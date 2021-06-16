@@ -6,7 +6,7 @@
 /*   By: hchorfi <hchorfi@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 23:31:19 by hchorfi           #+#    #+#             */
-/*   Updated: 2021/05/08 16:10:01 by hchorfi          ###   ########.fr       */
+/*   Updated: 2021/06/16 18:40:05 by hchorfi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 typedef struct s_list
 {
 	void			*content;
+	int				chank;
 	struct s_list	*next;
 	struct s_list	*prev;
 }					t_list;
@@ -66,5 +67,4 @@ t_list				*ft_lstlast(t_list *lst);
 void				ft_lstadd_back(t_list **lst, t_list *new);
 void				ft_lstadd_front(t_list **alst, t_list *new);
 int					ft_lstsize(t_list *lst);
-int					ft_strcmp(const char *s1, const char *s2);
 #endif

@@ -6,7 +6,7 @@
 /*   By: hchorfi <hchorfi@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/11 14:53:22 by hchorfi           #+#    #+#             */
-/*   Updated: 2021/06/16 20:02:14 by hchorfi          ###   ########.fr       */
+/*   Updated: 2021/06/17 21:32:42 by hchorfi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,11 @@ void    ft_rot_stack(t_list **stack, char print)
         ft_lstadd_back(*(&stack), ft_lstnew((*stack)->content));
         ft_lstlast(*stack)->chank = (*stack)->chank;
         ft_del_list(*(&stack), 1);
+        if (print == 'a')
+            printf("ra\n");
+        else if (print == 'b')
+            printf("rb\n");
     }
-    if (print == 'a')
-        printf("ra\n");
-    else if (print == 'b')
-        printf("rb\n");
 }
 
 void    ft_rr(t_list **a, t_list **b, char print)
@@ -65,11 +65,11 @@ void    ft_rev_rot_stack(t_list **stack, char print)
             i++;
             stack_head = stack_head->next;
         }
+        if (print == 'a')
+            printf("rra\n");
+        else if (print == 'b')
+            printf("rrb\n");
     }
-    if (print == 'a')
-        printf("rra\n");
-    else if (print == 'b')
-        printf("rrb\n");
 }
 
 void    ft_rrr(t_list **a, t_list **b, char print)

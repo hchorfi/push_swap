@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Launch",
             "program": "/Users/hchorfi/Desktop/push_swap/push_swap",
-            "args": ["2", "3", "5", "12", "10", "6", "9", "7", "4", "1", "8", "11"],
+            "args": ["2", "3", "5", "12", "10", "6", "9", "7", "4", "1", "11", "8"],
             "cwd": "${workspaceFolder}"
         },
         {

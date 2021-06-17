@@ -6,7 +6,7 @@
 /*   By: hchorfi <hchorfi@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/11 15:31:30 by hchorfi           #+#    #+#             */
-/*   Updated: 2021/06/16 21:47:06 by hchorfi          ###   ########.fr       */
+/*   Updated: 2021/06/17 21:56:10 by hchorfi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,33 +69,47 @@ int *ft_sort_array(int *arr, int low, int high)
 	return (arr);
 }
 
+int	ft_lstlast_chank(t_list *stack)
+{
+	int chank;
+	int val;
+
+	chank = stack->chank;
+	while (stack && stack->chank == chank)
+	{
+		val = *(int *)stack->content;
+		stack = stack->next;
+	}
+	return (val);
+}
+
 void	ft_midpoint_algo_a(t_list **a, t_list **b, int midpoint, int *stack_arr)
 {
 	int i;
-	int	index;
-	t_list *tail;
-	
+	int	ra;
+	int	tail;
+
 	i = 0;
-	index = ft_lstsize(*a) / 2;
-	while (i < midpoint)
+	ra = 0;
+	while (i < midpoint && (*a)->chank == 0)
 	{
 		if (*(int *)(*a)->content < stack_arr[midpoint])
 		{
 			ft_pb(a, b, 'b', midpoint);
 			i++;
-			ft_print_stacks(a, b);
+			//ft_print_stacks(a, b);
 		}
 		else
 		{
 			while (i < midpoint)
 			{
-				tail = ft_lstlast(*a);
-				if (*(int *)tail->content < stack_arr[midpoint])
+				tail = ft_lstlast_chank(*a);
+				if (tail < stack_arr[midpoint])
 				{
 					ft_rev_rot_stack(a, 'a');
 					ft_pb(a, b, 'b', midpoint);
 					i++;
-					ft_print_stacks(a, b);
+					//ft_print_stacks(a, b);
 				}
 				else
 				{
@@ -105,17 +119,38 @@ void	ft_midpoint_algo_a(t_list **a, t_list **b, int midpoint, int *stack_arr)
 						{
 							ft_pb(a, b, 'b', midpoint);
 							i++;
-							ft_print_stacks(a, b);
+							//ft_print_stacks(a, b);
 						}
 						else
 						{
 							ft_rot_stack(a, 'a');
-							ft_print_stacks(a, b);
+							//ft_print_stacks(a, b);
 						}
 					}
 				}
 			}
 		}
+	}
+	while (i < midpoint && (*a)->chank != 0)
+	{
+		if (*(int *)(*a)->content < stack_arr[midpoint])
+		{
+			ft_pb(a, b, 'b', midpoint);
+			i++;
+			//ft_print_stacks(a, b);
+		}
+		else
+		{
+			ft_rot_stack(a, 'a');
+			ra++;
+			//ft_print_stacks(a, b);
+		}
+	}
+	while (ra > 0)
+	{
+		ft_rev_rot_stack(a, 'a');
+		//ft_print_stacks(a, b);
+		ra--;
 	}
 }
 
@@ -126,11 +161,11 @@ int		ft_chank_len(t_list **stack_head, int chank)
 
 	stack = *stack_head;
 	len	= 0;
-	printf(" shunk befor size : %d - %d\n", ft_lstsize(stack), (stack)->chank);
+	//printf(" shunk befor size : %d - %d\n", ft_lstsize(stack), (stack)->chank);
 	while (stack && stack->chank == chank)
 	{
 		len++;
-		printf(" shunk size : %d - %d\n", ft_lstsize(stack), (stack)->chank);
+		//printf(" shunk size : %d - %d\n", ft_lstsize(stack), (stack)->chank);
 		stack = stack->next;
 		//if (stack->next)
 			//printf(" shunk af size : %d - %d\n", ft_lstsize(stack), (stack)->chank);
@@ -138,7 +173,7 @@ int		ft_chank_len(t_list **stack_head, int chank)
 	return (len);
 }
 
-void	ft_chanks_to_a(t_list **a_head, t_list **b_head)
+void	ft_chanks_to_b(t_list **a_head, t_list **b_head)
 {
 
 	int *stack_arr;
@@ -150,7 +185,6 @@ void	ft_chanks_to_a(t_list **a_head, t_list **b_head)
 	stack_arr = ft_sort_array(ft_conv_stack_arr(*a_head, len), 0, len - 1);
 	while (len > 2)
 	{
-		//ft_print_stacks(a_head, b_head);
 		//midpoint = midpoint + ((len - midpoint) / 2);
 		ft_midpoint_algo_a(a_head, b_head, len / 2, stack_arr);
 		len = ft_chank_len(a_head, (*a_head)->chank);
@@ -163,9 +197,13 @@ void	ft_chanks_to_a(t_list **a_head, t_list **b_head)
 		if (*(int *)(*a_head)->content > *(int *)(*a_head)->next->content)
 		{
 			ft_swap_stack(a_head, 'a');
-			ft_print_stacks(a_head, b_head);
+			//ft_print_stacks(a_head, b_head);
 		}
+		(*a_head)->chank = 0;
+		(*a_head)->next->chank = 0;
 	}
+	else if (len == 1)
+		(*a_head)->chank = 0;
 }
 
 void	ft_reverse_array(int *stack_arr, int start, int end)
@@ -208,7 +246,7 @@ void	ft_push_b_sorted(t_list **a_head, t_list **b_head)
 			ft_pa(a_head, b_head, 'a', 0);
 			stack_arr++;
 			len--;
-			//ft_print_stacks(a_head, b_head);
+			////ft_print_stacks(a_head, b_head);
 		}
 		else if (index < len / 2)
 		{
@@ -216,7 +254,7 @@ void	ft_push_b_sorted(t_list **a_head, t_list **b_head)
 			while (index > 0)
 			{
 				ft_rot_stack(b_head, 'b');
-				//ft_print_stacks(a_head, b_head);
+				////ft_print_stacks(a_head, b_head);
 				index--;
 			}
 			ft_pa(a_head, b_head, 'a', 0);
@@ -229,7 +267,7 @@ void	ft_push_b_sorted(t_list **a_head, t_list **b_head)
 			while (len - index > 0)
 			{
 				ft_rev_rot_stack(b_head, 'b');
-				//ft_print_stacks(a_head, b_head);
+				////ft_print_stacks(a_head, b_head);
 				index++;
 			}
 			ft_pa(a_head, b_head, 'a', 0);
@@ -238,6 +276,8 @@ void	ft_push_b_sorted(t_list **a_head, t_list **b_head)
 		}
 	}
 }
+
+
 
 void	ft_init_chanks(t_list **a_head)
 {
@@ -248,6 +288,76 @@ void	ft_init_chanks(t_list **a_head)
 	{
 		a->chank = 0;
 		a = a->next;
+	}
+}
+
+void	ft_midpoint_algo_b(t_list **a, t_list **b)
+{
+	int midpoint;
+	int	i;
+	int	len;
+	int	*chank_arr;
+	int rb;
+	
+	len = ft_chank_len(b, (*b)->chank);
+	chank_arr = ft_sort_array(ft_conv_stack_arr(*b, len), 0, len - 1);
+	midpoint = len / 2;
+	i = 0;
+	rb = 0;
+	while (i < len - midpoint)
+	{
+		if (*(int *)(*b)->content >= chank_arr[midpoint])
+		{
+			ft_pa(a, b, 'a', midpoint);
+			i++;
+			//ft_print_stacks(a, b);
+		}
+		else
+		{
+			ft_rot_stack(b, 'b');
+			rb++;
+			//ft_print_stacks(a, b);
+		}
+		//i++;
+	}
+	while (rb > 0)
+	{
+		ft_rev_rot_stack(b, 'b');
+		//ft_print_stacks(a, b);
+		rb--;
+	}
+	
+}
+
+void	ft_chanks_to_a(t_list **a_head, t_list **b_head)
+{
+	int len;
+
+	while(*b_head)
+	{
+		len = ft_chank_len(b_head, (*b_head)->chank);
+		if (len == 1)
+		{
+			ft_pa(a_head, b_head, 'a', 0);
+			//ft_print_stacks(a_head, b_head);
+		}
+		else if (len == 2)
+		{
+			if (*(int *)(*b_head)->content < *(int *)(*b_head)->next->content)
+			{
+				ft_swap_stack(b_head, 'b');
+				//ft_print_stacks(a_head, b_head);
+			}
+			ft_pa(a_head, b_head, 'a', 0);
+			//ft_print_stacks(a_head, b_head);
+			ft_pa(a_head, b_head, 'a', 0);
+			//ft_print_stacks(a_head, b_head);
+		}
+		else
+		{
+			ft_midpoint_algo_b(a_head, b_head);
+			ft_chanks_to_b(a_head, b_head);
+		}
 	}
 }
 
@@ -270,6 +380,7 @@ int main(int argc, char **argv)
 	//printf("a : %p\n", a);
 	//printf("b : %p\n", b);
 	ft_init_chanks(&a);
+	ft_chanks_to_b(&a, &b);
 	ft_chanks_to_a(&a, &b);
 	//ft_push_b_sorted(&a, &b);
 	// printf("a : %p\n", a);

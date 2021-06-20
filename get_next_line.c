@@ -6,16 +6,15 @@
 /*   By: hchorfi <hchorfi@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 20:12:18 by hchorfi           #+#    #+#             */
-/*   Updated: 2021/03/30 11:45:10 by hchorfi          ###   ########.fr       */
+/*   Updated: 2021/06/18 20:43:08 by hchorfi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-
 char	*ft_strcpy(char *dest, char *src)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (src[i] != '\0')
@@ -35,7 +34,8 @@ char	*ft_check_tmp(char **line, char *tmp)
 	chr = NULL;
 	if (tmp)
 	{
-		if ((chr = ft_strchr(tmp, '\n')))
+		chr = ft_strchr(tmp, '\n');
+		if (chr)
 		{
 			*chr = '\0';
 			swp = ft_strdup(++chr);
@@ -54,7 +54,7 @@ char	*ft_check_tmp(char **line, char *tmp)
 	return (chr);
 }
 
-int		ft_last_check(char **tmp, char **buffer)
+int	ft_last_check(char **tmp, char **buffer)
 {
 	free(*tmp);
 	*tmp = NULL;
@@ -62,32 +62,30 @@ int		ft_last_check(char **tmp, char **buffer)
 	return (0);
 }
 
-int		ft_free(char **x, int i)
+int	ft_free(char **x, int i)
 {
 	free(*x);
 	return (i);
 }
 
-int		get_next_line(int fd, char **line)
+int	get_next_line(int fd, char **line, char *buffer, int bc)
 {
-	char		*buffer;
-	static char *tmp;
+	static char	*tmp;
 	char		*chr;
-	int			bc;
 	char		*xt;
-	
+
 	if (fd == -1 || read(fd, NULL, 0) != 0 || BUFFER_SIZE < 0 || BUFFER_SIZE > M
 		|| !(buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1)))
 		return (-1);
 	chr = ft_check_tmp(line, tmp);
 	while (!chr)
 	{
-		if ((bc = read(fd, buffer, BUFFER_SIZE)) == 0)
-		{
+		bc = read(fd, buffer, BUFFER_SIZE);
+		if (bc == 0)
 			return (ft_last_check(&tmp, &buffer));
-		}
 		buffer[bc] = '\0';
-		if ((chr = strchr(buffer, '\n')))
+		chr = strchr(buffer, '\n');
+		if (chr)
 		{
 			*chr = '\0';
 			xt = tmp;

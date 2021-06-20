@@ -6,7 +6,7 @@
 /*   By: hchorfi <hchorfi@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/06 11:37:35 by hchorfi           #+#    #+#             */
-/*   Updated: 2021/06/16 21:23:37 by hchorfi          ###   ########.fr       */
+/*   Updated: 2021/06/18 20:12:29 by hchorfi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,6 @@ void    ft_rr(t_list **a, t_list **b, char print);
 
 int     ft_del_list(t_list **head, int position);
 void    ft_print_stacks(t_list **a_head, t_list **b_head);
+void	ft_clear(t_list **a_head, t_list **b_head);
 
 #endif

@@ -6,7 +6,7 @@
 #    By: hchorfi <hchorfi@student.1337.ma>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/14 15:29:06 by hchorfi           #+#    #+#              #
-#    Updated: 2021/06/15 13:40:32 by hchorfi          ###   ########.fr        #
+#    Updated: 2021/06/18 14:56:45 by hchorfi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ SRCS_PS = push_swap.c\
 
 FLAGS = -Werror -Wextra -Wall
 
-ASAN =  -g -fsanitize=address
+ASAN =  -g #-fsanitize=address
 
 $(NAME) :
 	make -C $(LIBFT_PATH)

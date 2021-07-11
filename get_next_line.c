@@ -6,7 +6,7 @@
 /*   By: hchorfi <hchorfi@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 20:12:18 by hchorfi           #+#    #+#             */
-/*   Updated: 2021/06/18 20:43:08 by hchorfi          ###   ########.fr       */
+/*   Updated: 2021/07/10 14:45:52 by hchorfi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,13 +74,13 @@ int	get_next_line(int fd, char **line, char *buffer, int bc)
 	char		*chr;
 	char		*xt;
 
-	if (fd == -1 || read(fd, NULL, 0) != 0 || BUFFER_SIZE < 0 || BUFFER_SIZE > M
-		|| !(buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1)))
+	buffer = (char *)malloc(sizeof(char) * (BS + 1));
+	if (fd == -1 || read(fd, NULL, 0) != 0 || BS < 0 || BS > M || !(buffer))
 		return (-1);
 	chr = ft_check_tmp(line, tmp);
 	while (!chr)
 	{
-		bc = read(fd, buffer, BUFFER_SIZE);
+		bc = read(fd, buffer, BS);
 		if (bc == 0)
 			return (ft_last_check(&tmp, &buffer));
 		buffer[bc] = '\0';

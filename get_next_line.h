@@ -6,14 +6,14 @@
 /*   By: hchorfi <hchorfi@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/30 19:48:15 by hchorfi           #+#    #+#             */
-/*   Updated: 2021/06/18 20:41:31 by hchorfi          ###   ########.fr       */
+/*   Updated: 2021/07/10 15:30:19 by hchorfi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 # define M 2147483647
-# define BUFFER_SIZE 1
+# define BS 1
 
 # include <fcntl.h>
 # include <unistd.h>
@@ -26,7 +26,6 @@ int		ft_strlen(const char *str);
 char	*ft_strjoin2(char const *s1, char const *s2);
 char	*ft_strchr(const char *s, int c);
 void	ft_bzero(void *s, size_t n);
-int     get_next_line(int fd, char **line, char *buffer, int bc);
-
+int		get_next_line(int fd, char **line, char *buffer, int bc);
 
 #endif

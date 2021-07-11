@@ -6,7 +6,7 @@
 /*   By: hchorfi <hchorfi@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/06 11:33:01 by hchorfi           #+#    #+#             */
-/*   Updated: 2021/06/18 20:59:50 by hchorfi          ###   ########.fr       */
+/*   Updated: 2021/07/10 13:49:09 by hchorfi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,17 @@ int	ft_check_stack_ops2(t_list **a, t_list **b, char *line)
 	return (1);
 }
 
-int	ft_check_stack_ops(t_list **a, t_list **b)
+int	ft_check_stack_ops3(char *line)
 {
-	char *line;
-	int  ret;
+	ft_putstr_fd("\033[0;31m", 1);
+	ft_putstr_fd("Error\n", 1);
+	ft_putstr_fd("\033[0m", 1);
+	free(line);
+	return (1);
+}
 
+int	ft_check_stack_ops(t_list **a, t_list **b, int ret, char *line)
+{
 	while (1)
 	{
 		ret = get_next_line(0, &line, NULL, 0);
@@ -65,19 +71,13 @@ int	ft_check_stack_ops(t_list **a, t_list **b)
 			return (0);
 		}
 		else
-		{
-			ft_putstr_fd("\033[0;31m", 1);
-			ft_putstr_fd("Error\n", 1);
-			ft_putstr_fd("\033[0m", 1);
-			free(line);
-			return (1);
-		}
+			return (ft_check_stack_ops3(line));
 		free(line);
 	}
 	return (0);
 }
 
-int ft_check_sorting(t_list *a, t_list *b)
+int	ft_check_sorting(t_list *a, t_list *b)
 {
 	while (a && a->next)
 	{
@@ -85,32 +85,24 @@ int ft_check_sorting(t_list *a, t_list *b)
 			a = a->next;
 		else
 		{
-			ft_putstr_fd("\033[0;31m", 1);
-			ft_putstr_fd("ko\n", 1);
-			ft_putstr_fd("\033[0m", 1);
+			ft_putstr_fd("\033[0;31mko\033[0m\n", 1);
 			return (1);
 		}
 	}
 	if (ft_lstsize(b) == 0 && !b)
-	{
-		ft_putstr_fd("\033[0;32m", 1);
-		ft_putstr_fd("ok\n", 1);
-		ft_putstr_fd("\033[0m", 1);
-	}
+		ft_putstr_fd("\033[0;32mok\033[0m\n", 1);
 	else
 	{
-		ft_putstr_fd("\033[0;31m", 1);
-		ft_putstr_fd("ko\n", 1);
-		ft_putstr_fd("\033[0m", 1);
+		ft_putstr_fd("\033[0;31mko\033[0m\n", 1);
 		return (1);
 	}
 	return (0);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	t_list  *a;
-	t_list  *b;
+	t_list	*a;
+	t_list	*b;
 
 	if (argc == 1)
 		return (0);
@@ -123,14 +115,12 @@ int main(int argc, char **argv)
 	}
 	a = ft_init_stacks(argc, argv, 1);
 	b = ft_init_stacks(argc, argv, 0);
-	if (ft_check_stack_ops(&a, &b))
+	if (ft_check_stack_ops(&a, &b, 0, NULL))
 	{
 		ft_clear(&a, &b);
-		system("leaks checker");
 		return (1);
 	}
 	ft_check_sorting(a, b);
 	ft_clear(&a, &b);
-	system("leaks checker");
 	return (0);
 }
